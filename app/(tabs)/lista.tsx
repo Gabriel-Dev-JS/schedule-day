@@ -1,15 +1,22 @@
-import Card, { CardProps } from "@/components/Card"
-import { FC, ReactNode, useState } from "react"
-import { View, Text, TextInput, TouchableOpacity } from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
+import Card from "@/components/Card";
+import { useState } from "react";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+// interface ListaItem {
+//   id?:number
+//   item:string;
+// }
 
 export default function Lista () {
 
+  
   const [itemList, setItemList] = useState<string>("")
   const [listCard, setListCard] = useState<string[]>([])
   
   const enviarLista = () => {
     setListCard(prev => [...prev, itemList])
+    setItemList("")
     // setListCard([...listCard, itemList])
     console.log("itemList: ", itemList)
   }
@@ -20,12 +27,14 @@ export default function Lista () {
         {/* <Text style={{color:"white"}}>Hello world</Text>
         <Text style={{color:"white"}}>{teste}</Text> */}
         {listCard?.map((val, index) => (
+          // <Card index={index} itens={val}/>
           <Card key={index} itens={val}/>
         ))}
       </View>
       <View style={{backgroundColor:"white", width:"95%", height:"10%", display:"flex", flexDirection:"row", gap:"12"}}>
         <TextInput 
           onChangeText={(e)=> setItemList(e)}
+          value={itemList}
           style={{width:"80%", backgroundColor:"blue"}}
           placeholder="digite algo..."
         />
