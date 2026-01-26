@@ -24,10 +24,7 @@ export default function Lista () {
   return (
     <SafeAreaView style={{flex:1, display:"flex", flexDirection:"column", alignItems:"center"}} edges={["top", "bottom"]}>
       <View style={{width:"95%", height:"90%", backgroundColor:"red"}}>
-        {/* <Text style={{color:"white"}}>Hello world</Text>
-        <Text style={{color:"white"}}>{teste}</Text> */}
         {listCard?.map((val, index) => (
-          // <Card index={index} itens={val}/>
           <Card key={index} itens={val}/>
         ))}
       </View>
