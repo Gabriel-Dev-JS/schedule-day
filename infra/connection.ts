@@ -1,35 +1,49 @@
 import * as SQLite from 'expo-sqlite';
+import { type SQLiteDatabase } from 'expo-sqlite';
+
+// const db = await SQLite.openDatabaseAsync('todo');
 
 
-const db = await SQLite.openDatabaseAsync('todo');
-
-await db.execAsync(`
-    CREATE TABLE IF NOT EXISTS tarefas (id INTEGER PRIMARY KEY NOT NULL, tarefa TEXT)
+const connection = async (dastabase: SQLiteDatabase) => {
+ await dastabase.execAsync(`
+    CREATE TABLE IF NOT EXISTS tarefas (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tarefa TEXT NOT NULL,
+        ativo INTEGER DEFAULT 0
+    )
 `)
-
-const insert = await db.prepareAsync(`
-    INSERT INTO tarefas (tarefa) values ($value)
-`)
-
-const excluir = await db.prepareAsync(`
-    DELETE FROM tarefas WHERE id = $id
-`)
-
-export const tarefa = async (tarefa:string) => {
-    try {
-        await insert.executeAsync({$value: tarefa})
-    } finally {
-        await insert.executeAsync();
-    }
 }
 
-export const excluirTarefa = async (id:number) => {
-    try {
-        await excluir.executeAsync({$id: id})
-    } finally {
-        await excluir.finalizeAsync()
-    }
-}
+
+export default connection;
+
+// await db.execAsync(`
+//     CREATE TABLE IF NOT EXISTS tarefas (id INTEGER PRIMARY KEY NOT NULL, tarefa TEXT)
+// `)
+
+// const insert = await db.prepareAsync(`
+//     INSERT INTO tarefas (tarefa) values ($value)
+// `)
+
+// const excluir = await db.prepareAsync(`
+//     DELETE FROM tarefas WHERE id = $id
+// `)
+
+// export const tarefa = async (tarefa:string) => {
+//     try {
+//         await insert.executeAsync({$value: tarefa})
+//     } finally {
+//         await insert.executeAsync();
+//     }
+// }
+
+// export const excluirTarefa = async (id:number) => {
+//     try {
+//         await excluir.executeAsync({$id: id})
+//     } finally {
+//         await excluir.finalizeAsync()
+//     }
+// }
 
 
 

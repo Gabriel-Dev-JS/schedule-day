@@ -2,6 +2,7 @@ import Card from "@/components/Card";
 import { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { UseQuery } from "@/infra/useQuery";
 
 // interface ListaItem {
 //   id?:number
@@ -10,15 +11,25 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Lista () {
 
-  
   const [itemList, setItemList] = useState<string>("")
   const [listCard, setListCard] = useState<string[]>([])
-  
+
+  const query = new UseQuery()
+
   const enviarLista = () => {
     setListCard(prev => [...prev, itemList])
     setItemList("")
     // setListCard([...listCard, itemList])
     console.log("itemList: ", itemList)
+  }
+
+  const create = async () => {
+    try {
+
+      // await query.create()
+    } catch (error:any) {
+
+    }
   }
 
   return (
