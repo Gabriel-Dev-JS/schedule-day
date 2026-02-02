@@ -1,36 +1,67 @@
-import { type SQLiteDatabase, useSQLiteContext } from "expo-sqlite";
+import { useSQLiteContext } from "expo-sqlite";
 
-interface TarefasProps {
+export interface TarefasProps {
   id: number;
   tarefa: string;
   ativo: number;
 }
 
 
-class UseQuery {
+const useDatabase = () => {
 
-  database:SQLiteDatabase
-  
-  constructor(){
-    this.database = useSQLiteContext()
-  }
+  const database = useSQLiteContext()
 
-  async create (data: Omit<TarefasProps, "id">) {
-    const query = await this.database.prepareAsync(`
+
+  const create = async (data: Omit<TarefasProps, "id">) => {
+    
+    const query = await database.prepareAsync(`
       INSERT INTO tarefas (tarefa, ativo) VALUES ($tarefa, $ativo)  
     `)
-
+  
     try{
-      query.executeAsync({
+      const result = await query.executeAsync({
         $tarefa: data.tarefa,
         $ativo: data.ativo
       })
+
+      return result
     }catch(error:any){
       console.error("erro: ", error)
     }finally{
-      (await query).finalizeAsync()
+      await query.finalizeAsync()
     }
   }
-}
 
-export {UseQuery}
+  const getAll = async () => {
+    const query = `SELECT * FROM tarefas`
+    try{
+      const response = await database.getAllAsync<TarefasProps>(query)
+      return response ?? []
+    }catch(error:any){
+      console.error("error: ", error)
+
+      return []
+    }
+  }
+
+  const remove = async (id: number) => {
+    const query = await database.prepareAsync(`DELETE FROM tarefas WHERE id = $id`) 
+    try{
+      const response = await query.executeAsync<number>({$id: id})
+
+      return response
+    }catch(error:any){
+      console.error("error: ", error)
+    }finally{
+      await query.finalizeAsync()
+    }
+  }
+
+
+  return {create, getAll, remove}
+} 
+  
+
+
+export { useDatabase };
+

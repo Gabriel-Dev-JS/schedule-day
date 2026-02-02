@@ -1,4 +1,4 @@
-import * as SQLite from 'expo-sqlite';
+// import * as SQLite from 'expo-sqlite';
 import { type SQLiteDatabase } from 'expo-sqlite';
 
 // const db = await SQLite.openDatabaseAsync('todo');
