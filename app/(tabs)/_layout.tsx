@@ -2,9 +2,11 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 
 import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import Entypo from '@expo/vector-icons/Entypo';
+
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -17,24 +19,17 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
       }}>
       <Tabs.Screen
-        name="index"
+        name="list"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'List',
+          tabBarIcon: ({ color }) => <AntDesign name="unordered-list" size={24} color={color} />
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="addList"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="lista"
-        options={{
-          title: 'Lista',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'Add List',
+          tabBarIcon: ({ color }) => <Entypo name="add-to-list" size={24} color={color} />,
         }}
       />
     </Tabs>

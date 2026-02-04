@@ -59,7 +59,7 @@ export default connection;
 //   db = await SQLite.openDatabaseAsync('todo.db');
 
 //   await db.execAsync(`
-//     CREATE TABLE IF NOT EXISTS tarefas (
+//     CREATE TABLE IF NOT EXISTS tarefas (l
 //       id INTEGER PRIMARY KEY AUTOINCREMENT,
 //       tarefa TEXT NOT NULL
 //     );

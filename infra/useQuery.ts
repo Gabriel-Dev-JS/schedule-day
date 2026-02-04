@@ -43,11 +43,35 @@ const useDatabase = () => {
       return []
     }
   }
+  
+  const getId = async (id:number) => {
+    const query = `SELECT * FROM tarefas WHERE id=$id`
+    try{
+      const response = await database.getAllAsync<number>(query)
+      return response ?? []
+    }catch(error:any){
+      console.error("error: ", error)
+
+      return []
+    }
+  }
 
   const remove = async (id: number) => {
     const query = await database.prepareAsync(`DELETE FROM tarefas WHERE id = $id`) 
     try{
       const response = await query.executeAsync<number>({$id: id})
+      return response
+    }catch(error:any){
+      console.error("error: ", error)
+    }finally{
+      await query.finalizeAsync()
+    }
+  }
+  
+  const updateTarefa = async (data: Omit<TarefasProps, "ativo">) => {
+    const query = await database.prepareAsync(`UPDATE tarefas SET tarefa=$tarefa WHERE id=$id`) 
+    try{
+      const response = await query.executeAsync<TarefasProps>({$id: data.id, $tarefa: data.tarefa})
 
       return response
     }catch(error:any){
@@ -58,7 +82,7 @@ const useDatabase = () => {
   }
 
 
-  return {create, getAll, remove}
+  return {create, getAll, remove, updateTarefa, getId}
 } 
   
 
