@@ -141,14 +141,14 @@ export default function List() {
   },[list, incremento])
 
 
-  // const create = async (item: Omit<TarefasProps, "id">) => {
-  //   try {
-  //     await database.create(item)
-  //     setIncremento(incremento + 1)
-  //   } catch (error:any) {
-  //     console.error("error: ", error)
-  //   }
-  // }
+  const create = async (item: Omit<TarefasProps, "id">) => {
+    try {
+      await database.create(item)
+      setIncremento(incremento + 1)
+    } catch (error:any) {
+      console.error("error: ", error)
+    }
+  }
 
   const deletar = async (id: number):Promise<SQLiteExecuteAsyncResult<number> | undefined> => {
     try{
