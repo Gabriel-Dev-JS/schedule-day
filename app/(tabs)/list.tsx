@@ -3,7 +3,7 @@ import { RefreshContext } from "@/contexts/reloadContext/refreshContext";
 import { TarefasProps, useDatabase } from "@/infra/useQuery";
 import { SQLiteExecuteAsyncResult } from "expo-sqlite";
 import { useContext, useEffect, useState } from "react";
-import { FlatList, TextInput, View } from "react-native";
+import { FlatList, StyleSheet, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 
@@ -70,42 +70,77 @@ export default function List() {
   }
 
   return (
-    <SafeAreaView style={{flex:1, display:"flex", flexDirection:"column", alignItems:"center"}} edges={["top", "bottom"]}>
-      <View style={{width:"95%", height:"100%", backgroundColor:"red"}}>
-        <TextInput 
-          onChangeText={(e)=> setfiltroTarefa(e)}
-          value={filtroTarefa}
-          style={{width:"80%", backgroundColor:"blue"}}
-          placeholder="digite algo..."
-        />
-        {
-          filtroTarefa !== "" ? (
-            <FlatList
-              data={tarefasFiltradas}
-              renderItem={({item})=> <Card 
-              key={item.id} 
-              id={item.id}
-              itens={item.tarefa} 
-              funcUpd={(id)=> updateTarefa(id)}
-              funcDel={(id)=> deletar(id)} 
-              />}
-            />
-          ) : (
-            <FlatList
-              data={tarefas}
-              renderItem={({item})=> <Card 
-              key={item.id} 
-              id={item.id}
-              itens={item.tarefa} 
-              funcUpd={(id)=> updateTarefa(id)}
-              funcDel={(id)=> deletar(id)} 
-              />}
-            />
-
-          )
-
-        }
+    <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
+      <View style={styles.container}>
+        <View>
+          <TextInput 
+            onChangeText={(e)=> setfiltroTarefa(e)}
+            value={filtroTarefa}
+            style={styles.input}
+            placeholder="Pesquisar"
+          />
+        </View>
+        <View>
+          {
+            filtroTarefa !== "" ? (
+              <FlatList
+                style={styles.lista}
+                data={tarefasFiltradas}
+                renderItem={({item})=> <Card 
+                key={item.id} 
+                id={item.id}
+                itens={item.tarefa} 
+                funcUpd={(id)=> updateTarefa(id)}
+                funcDel={(id)=> deletar(id)} 
+                />}
+              />
+            ) : (
+              <FlatList
+                style={styles.lista}
+                data={tarefas}
+                renderItem={({item})=> <Card 
+                key={item.id} 
+                id={item.id}
+                itens={item.tarefa} 
+                funcUpd={(id)=> updateTarefa(id)}
+                funcDel={(id)=> deletar(id)} 
+                />}
+              />
+            )
+          }
+        </View>
       </View>
     </SafeAreaView>
   )
 }
+
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex:1, 
+    display:"flex", 
+    flexDirection:"column", 
+    alignItems:"center", 
+    justifyContent:"center",
+    backgroundColor: "white"
+  },
+  container: {
+    flex: 1,
+    width:"95%", 
+    height:"100%", 
+    display: "flex",
+    backgroundColor:"red",
+    padding: 12,
+    gap: 24
+  },
+  lista: {
+    width: "100%"
+  },
+  input: {
+    width:"100%", 
+    height: 60, 
+    backgroundColor: "#d3d3d3",
+    borderRadius: 8,
+    padding: 14
+  }
+})

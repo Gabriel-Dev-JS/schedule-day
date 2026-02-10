@@ -40,7 +40,7 @@ export default function Card ({itens, funcUpd, funcDel, id}:CardProps) {
 
 const styles = StyleSheet.create({
   container: {
-    width: "90%",
+    width: "100%",
     backgroundColor: "blue", 
     marginTop:12, 
     height: "auto",
