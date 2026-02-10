@@ -100,56 +100,49 @@
 
 
 import Card from "@/components/Card";
+import { RefreshContext } from "@/contexts/reloadContext/refreshContext";
 import { TarefasProps, useDatabase } from "@/infra/useQuery";
 import { SQLiteExecuteAsyncResult } from "expo-sqlite";
-import { useCallback, useEffect, useState } from "react";
-import { FlatList, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useContext, useEffect, useState } from "react";
+import { FlatList, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-
-// interface ListaItem {
-//   id?:number
-//   item:string;
-// }
 
 export default function List() {
 
   const database = useDatabase()
-
-  const [tarefa, setTarefa] = useState<string>("")
+  const context = useContext(RefreshContext)
+  
+  const [atualizarTarefa, setAtualizarTarefa] = useState<string>("")
+  const [filtroTarefa, setfiltroTarefa] = useState<string>("")
+  const [tarefasFiltradas, setTarefasFiltradas] = useState<TarefasProps[]>([])
   const [tarefas, setTarefas] = useState<TarefasProps[]>([])
   const [incremento, setIncremento] = useState<number>(0)
 
-  const [atualizarTarefa, setAtualizarTarefa] = useState<string>("")
-
-  const list = useCallback(async () => {
+  useEffect(() => {
+    async function list() {
       try{
         const response = await database.getAll()
-  
         setTarefas(response)
-        
         console.log(response)
         return response
       }catch(error:any){
         console.error("error: ", error)
       }
-  }, [])
-
-
-  useEffect(() => {
-    list()
-  },[list, incremento])
-
-
-  const create = async (item: Omit<TarefasProps, "id">) => {
-    try {
-      await database.create(item)
-      setIncremento(incremento + 1)
-    } catch (error:any) {
-      console.error("error: ", error)
     }
-  }
+    list()
+  },[context?.refresh, incremento])
 
+  
+  const filtro = () => {
+   setTarefasFiltradas(tarefas.filter(val => val.tarefa.toUpperCase().includes(filtroTarefa.toUpperCase())))
+  }
+  
+  useEffect(() => {
+    filtro()
+  }, [filtroTarefa])
+
+  
   const deletar = async (id: number):Promise<SQLiteExecuteAsyncResult<number> | undefined> => {
     try{
       const response = await database.remove(id)
@@ -179,51 +172,42 @@ export default function List() {
     }
   }
 
-  const enviarLista = () => {
-    
-    const tarefas: Omit<TarefasProps, "id"> = {
-      tarefa: tarefa as string,
-      ativo: 0
-    }
-
-    if(tarefas.tarefa.trim() !== ""){
-      create(tarefas)
-      setTarefa("")
-    }
-      
-    return null
-  }
-
   return (
     <SafeAreaView style={{flex:1, display:"flex", flexDirection:"column", alignItems:"center"}} edges={["top", "bottom"]}>
-      <View style={{width:"95%", height:"90%", backgroundColor:"red"}}>
-        <FlatList
-          data={tarefas}
-          renderItem={({item})=> <Card 
-          key={item.id} 
-          id={item.id}
-          itens={item.tarefa} 
-          funcUpd={(id)=> updateTarefa(id)}
-          funcDel={(id)=> deletar(id)} 
-          />}
-        />
-      </View>
-      <View style={{backgroundColor:"white", width:"95%", height:"10%", display:"flex", flexDirection:"row", gap:"12"}}>
+      <View style={{width:"95%", height:"100%", backgroundColor:"red"}}>
         <TextInput 
-          onChangeText={(e)=> setTarefa(e)}
-          value={tarefa}
+          onChangeText={(e)=> setfiltroTarefa(e)}
+          value={filtroTarefa}
           style={{width:"80%", backgroundColor:"blue"}}
           placeholder="digite algo..."
         />
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={enviarLista}
-          style={{backgroundColor:"green", width:"15%"}}
-        >
-          <View>
-            <Text>Enviar</Text>
-          </View>
-        </TouchableOpacity>
+        {
+          filtroTarefa !== "" ? (
+            <FlatList
+              data={tarefasFiltradas}
+              renderItem={({item})=> <Card 
+              key={item.id} 
+              id={item.id}
+              itens={item.tarefa} 
+              funcUpd={(id)=> updateTarefa(id)}
+              funcDel={(id)=> deletar(id)} 
+              />}
+            />
+          ) : (
+            <FlatList
+              data={tarefas}
+              renderItem={({item})=> <Card 
+              key={item.id} 
+              id={item.id}
+              itens={item.tarefa} 
+              funcUpd={(id)=> updateTarefa(id)}
+              funcDel={(id)=> deletar(id)} 
+              />}
+            />
+
+          )
+
+        }
       </View>
     </SafeAreaView>
   )

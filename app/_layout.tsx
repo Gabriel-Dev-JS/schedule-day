@@ -3,9 +3,10 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
+import { RefreshProvider } from '@/contexts/reloadContext/reloadContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { SQLiteProvider } from 'expo-sqlite';
 import connection from '@/infra/connection';
+import { SQLiteProvider } from 'expo-sqlite';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -17,10 +18,12 @@ export default function RootLayout() {
   return (
     <SQLiteProvider databaseName="schedule.db" onInit={connection}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-        </Stack>
+        <RefreshProvider>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+          </Stack>
+        </RefreshProvider> 
         <StatusBar style="auto" />
       </ThemeProvider>
     </SQLiteProvider>
