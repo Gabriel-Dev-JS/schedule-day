@@ -7,6 +7,7 @@ import { RefreshProvider } from '@/contexts/reloadContext/reloadContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import connection from '@/infra/connection';
 import { SQLiteProvider } from 'expo-sqlite';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -19,10 +20,12 @@ export default function RootLayout() {
     <SQLiteProvider databaseName="schedule.db" onInit={connection}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <RefreshProvider>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-          </Stack>
+          <GestureHandlerRootView>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+            </Stack>
+          </GestureHandlerRootView>
         </RefreshProvider> 
         <StatusBar style="auto" />
       </ThemeProvider>

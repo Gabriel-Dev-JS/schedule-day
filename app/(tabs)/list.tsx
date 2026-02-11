@@ -2,7 +2,7 @@ import Card from "@/components/Card";
 import { RefreshContext } from "@/contexts/reloadContext/refreshContext";
 import { TarefasProps, useDatabase } from "@/infra/useQuery";
 import { SQLiteExecuteAsyncResult } from "expo-sqlite";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FlatList, StyleSheet, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -129,7 +129,6 @@ const styles = StyleSheet.create({
     width:"95%", 
     height:"100%", 
     display: "flex",
-    backgroundColor:"red",
     padding: 12,
     gap: 24
   },
