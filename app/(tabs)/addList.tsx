@@ -12,7 +12,7 @@ export default function AddList() {
 
   const [tarefa, setTarefa] = useState<string>("")
 
-  const create = async (item: Omit<TarefasProps, "id">) => {
+  const create = async (item: Pick<TarefasProps, "tarefa">) => {
     try {
       await database.create(item)
 
@@ -27,9 +27,8 @@ export default function AddList() {
 
   const enviarLista = () => {
     
-    const tarefas: Omit<TarefasProps, "id"> = {
+    const tarefas: Pick<TarefasProps, "tarefa"> = {
       tarefa: tarefa as string,
-      ativo: 0
     }
 
     if(tarefas.tarefa.trim() !== ""){

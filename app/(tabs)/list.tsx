@@ -1,11 +1,11 @@
 import Card from "@/components/Card";
+import Modal from "@/components/Modal";
 import { RefreshContext } from "@/contexts/reloadContext/refreshContext";
 import { TarefasProps, useDatabase } from "@/infra/useQuery";
 import { SQLiteExecuteAsyncResult } from "expo-sqlite";
 import React, { useContext, useEffect, useState } from "react";
 import { FlatList, StyleSheet, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 
 export default function List() {
 
@@ -16,6 +16,12 @@ export default function List() {
   const [filtroTarefa, setfiltroTarefa] = useState<string>("")
   const [tarefasFiltradas, setTarefasFiltradas] = useState<TarefasProps[]>([])
   const [tarefas, setTarefas] = useState<TarefasProps[]>([])
+  const [openModal, setOpenModal] = useState<boolean>(false)
+
+  const [tarefa, setTarefa] = useState<string>("")
+  // const [tarefa, setTarefa] = useState<string>("")
+  const [newTarefa, setnewTarefa] = useState<string>("")
+  // const [concluido, setConcluido] = useState<boolean>(false)
 
   useEffect(() => {
     async function list() {
@@ -51,10 +57,10 @@ export default function List() {
       console.error("error: ", error)
     }
   }
- 
+
   const updateTarefa = async (id:number):Promise<SQLiteExecuteAsyncResult<TarefasProps> | undefined> => {
 
-    const tarefas: Omit<TarefasProps, "ativo"> = {
+    const tarefas: Omit<TarefasProps, "concluido"> = {
       id: id,
       tarefa: atualizarTarefa
     }
@@ -69,18 +75,48 @@ export default function List() {
     }
   }
 
+  const done = (id:number) => {
+    setTarefas((prev) => prev.map(val => val.id === id ? {...val, concluido: !val?.concluido} : val))
+  }
+  
+  const abrirnModal = async (id:number):Promise<SQLiteExecuteAsyncResult<TarefasProps> | any> => {
+    try {
+      const response = await database.getId(id)
+      let [{tarefa}] = response.map(val => val)
+      setTarefa(tarefa)
+    }catch(error:any){
+      console.error("error: ", error)
+    }
+    setOpenModal(!openModal)
+  }
+
+  const closeModal = () => {
+    setnewTarefa("")
+    setOpenModal(!openModal)
+  }
+
+  console.log(newTarefa)
   return (
     <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
+      <Modal 
+        openModal={openModal}
+        closeModal={closeModal}
+        tarefa={tarefa}
+        value={newTarefa}
+        alterarTexto={(e:string)=> setnewTarefa(e)}
+        executar={()=> updateTarefa(id)}
+        titulo="Alterar Tarefa"
+      />
       <View style={styles.container}>
         <View>
           <TextInput 
             onChangeText={(e)=> setfiltroTarefa(e)}
             value={filtroTarefa}
             style={styles.input}
-            placeholder="Pesquisar"
+            placeholder="🔍    Pesquisar..." 
           />
         </View>
-        <View>
+        <View style={{height:"90%"}}>
           {
             filtroTarefa !== "" ? (
               <FlatList
@@ -90,8 +126,11 @@ export default function List() {
                 key={item.id} 
                 id={item.id}
                 itens={item.tarefa} 
-                funcUpd={(id)=> updateTarefa(id)}
+                funcUpd={(id)=> abrirnModal(id)}
+                // funcUpd={(id)=> updateTarefa(id)}
                 funcDel={(id)=> deletar(id)} 
+                concluido={item.concluido}
+                done={(id)=> done(id)}
                 />}
               />
             ) : (
@@ -102,8 +141,11 @@ export default function List() {
                 key={item.id} 
                 id={item.id}
                 itens={item.tarefa} 
-                funcUpd={(id)=> updateTarefa(id)}
+                funcUpd={(id)=> abrirnModal(id)}
+                // funcUpd={(id)=> updateTarefa(id)}
                 funcDel={(id)=> deletar(id)} 
+                concluido={item.concluido}
+                done={(id)=> done(id)}
                 />}
               />
             )

@@ -8,10 +8,12 @@ const connection = async (dastabase: SQLiteDatabase) => {
  await dastabase.execAsync(`
     CREATE TABLE IF NOT EXISTS tarefas (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        tarefa TEXT NOT NULL,
-        ativo INTEGER DEFAULT 0
+        tarefa TEXT NOT NULL
     )
 `)
+//  await dastabase.execAsync(`
+//     DROP TABLE IF EXISTS tarefas 
+// `)
 }
 
 

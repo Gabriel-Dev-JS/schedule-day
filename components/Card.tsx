@@ -1,5 +1,7 @@
-import { TarefasProps } from "@/infra/useQuery";
+import { TarefasProps } from '@/infra/useQuery';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { SQLiteExecuteAsyncResult } from "expo-sqlite";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
@@ -7,11 +9,14 @@ import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 export interface CardProps {
   id: number;
   itens: string;
-  funcUpd: (id: number) => Promise<SQLiteExecuteAsyncResult<TarefasProps> | undefined>
+  concluido: boolean;
+  done: (id:number)=> void;
+  funcUpd: (id: number) => Promise<SQLiteExecuteAsyncResult<TarefasProps> | undefined>;
+  // funcUpd: (id: number) => Promise<SQLiteExecuteAsyncResult<TarefasProps> | undefined>
   funcDel: (id: number) => Promise<SQLiteExecuteAsyncResult<number> | undefined>
 } 
 
-export default function Card ({itens, funcUpd, funcDel, id}:CardProps) {
+export default function Card ({itens, funcUpd, funcDel, id, concluido, done}:CardProps) {
 
   const renderActions = () => (
     <View style={styles.containerIcones}>
@@ -29,17 +34,29 @@ export default function Card ({itens, funcUpd, funcDel, id}:CardProps) {
   )
 
   return (
-    // <View style={{width:"90%", backgroundColor:"blue", marginTop:12, height:46}}>
     <Swipeable renderRightActions={renderActions}>
       <View style={styles.container}>
-          <Text style={{fontWeight: 600}}>
-            {itens}
-          </Text>
-        {/* <View style={styles.containerTarefas}>
-          <Text>
-            {itens}
-          </Text>
-        </View> */}
+        {
+          concluido ? (
+            <>
+              <Text style={{ fontWeight: 600, textDecorationLine: "line-through", color: "#7b3434"}}>
+                {itens}
+              </Text>
+              <TouchableOpacity onPress={() => done(id)}>
+                <MaterialIcons name="cancel" size={24} color="black" />
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              <Text style={{fontWeight: 600}}>
+                {itens}
+              </Text>
+              <TouchableOpacity onPress={() => done(id)}>
+                <Ionicons name="checkmark-done" size={24} color="black" />
+              </TouchableOpacity>
+            </>
+          )
+        }
       </View>
     </Swipeable>
   )
@@ -48,7 +65,6 @@ export default function Card ({itens, funcUpd, funcDel, id}:CardProps) {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    // backgroundColor: "white", 
     backgroundColor: "#808080", 
     display: "flex",
     flexDirection: "row",

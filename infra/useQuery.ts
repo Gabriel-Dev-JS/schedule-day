@@ -3,7 +3,7 @@ import { useSQLiteContext } from "expo-sqlite";
 export interface TarefasProps {
   id: number;
   tarefa: string;
-  ativo: number;
+  concluido: boolean;
 }
 
 
@@ -12,16 +12,15 @@ const useDatabase = () => {
   const database = useSQLiteContext()
 
 
-  const create = async (data: Omit<TarefasProps, "id">) => {
+  const create = async (data: Omit<TarefasProps, "id" | "concluido">) => {
     
     const query = await database.prepareAsync(`
-      INSERT INTO tarefas (tarefa, ativo) VALUES ($tarefa, $ativo)  
+      INSERT INTO tarefas (tarefa) VALUES ($tarefa)  
     `)
   
     try{
       const result = await query.executeAsync({
         $tarefa: data.tarefa,
-        $ativo: data.ativo
       })
 
       return result
@@ -45,10 +44,11 @@ const useDatabase = () => {
   }
   
   const getId = async (id:number) => {
-    const query = `SELECT * FROM tarefas WHERE id=$id`
+    // const query = await database.prepareAsync(`SELECT * FROM tarefas WHERE id=$id`)
+    const query = `SELECT * FROM tarefas WHERE id=${id}`
     try{
-      const response = await database.getAllAsync<number>(query)
-      return response ?? []
+      const response = await database.getAllAsync<TarefasProps>(query)
+      return response ?? undefined
     }catch(error:any){
       console.error("error: ", error)
 
@@ -68,11 +68,10 @@ const useDatabase = () => {
     }
   }
   
-  const updateTarefa = async (data: Omit<TarefasProps, "ativo">) => {
+  const updateTarefa = async (data: Omit<TarefasProps, "concluido">) => {
     const query = await database.prepareAsync(`UPDATE tarefas SET tarefa=$tarefa WHERE id=$id`) 
     try{
       const response = await query.executeAsync<TarefasProps>({$id: data.id, $tarefa: data.tarefa})
-
       return response
     }catch(error:any){
       console.error("error: ", error)
