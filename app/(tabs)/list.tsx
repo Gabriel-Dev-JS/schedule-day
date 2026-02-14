@@ -12,16 +12,13 @@ export default function List() {
   const database = useDatabase()
   const context = useContext(RefreshContext)
   
-  const [atualizarTarefa, setAtualizarTarefa] = useState<string>("")
   const [filtroTarefa, setfiltroTarefa] = useState<string>("")
   const [tarefasFiltradas, setTarefasFiltradas] = useState<TarefasProps[]>([])
   const [tarefas, setTarefas] = useState<TarefasProps[]>([])
   const [openModal, setOpenModal] = useState<boolean>(false)
 
-  const [tarefa, setTarefa] = useState<string>("")
-  // const [tarefa, setTarefa] = useState<string>("")
+  const [tarefa, setTarefa] = useState<Omit<TarefasProps, "concluido">>()
   const [newTarefa, setnewTarefa] = useState<string>("")
-  // const [concluido, setConcluido] = useState<boolean>(false)
 
   useEffect(() => {
     async function list() {
@@ -62,11 +59,13 @@ export default function List() {
 
     const tarefas: Omit<TarefasProps, "concluido"> = {
       id: id,
-      tarefa: atualizarTarefa
+      tarefa: newTarefa
     }
 
     try{
       const response = await database.updateTarefa(tarefas)
+      setnewTarefa("")
+      setOpenModal(false)
       if (!context) throw new Error("Erro ao de refresh no contexto");
       context?.incremento()
       return response 
@@ -82,8 +81,8 @@ export default function List() {
   const abrirnModal = async (id:number):Promise<SQLiteExecuteAsyncResult<TarefasProps> | any> => {
     try {
       const response = await database.getId(id)
-      let [{tarefa}] = response.map(val => val)
-      setTarefa(tarefa)
+      let [{tarefa, id:ids}] = response.map(val => val)
+      setTarefa({id:ids, tarefa:tarefa})
     }catch(error:any){
       console.error("error: ", error)
     }
@@ -101,11 +100,12 @@ export default function List() {
       <Modal 
         openModal={openModal}
         closeModal={closeModal}
-        tarefa={tarefa}
+        tarefa={tarefa?.tarefa !== undefined ? tarefa?.tarefa : ""}
         value={newTarefa}
         alterarTexto={(e:string)=> setnewTarefa(e)}
-        executar={()=> updateTarefa(id)}
+        executar={()=> updateTarefa(tarefa?.id !== undefined ? tarefa?.id : 0)}
         titulo="Alterar Tarefa"
+        id={tarefa?.id !== undefined ? tarefa?.id : 0}
       />
       <View style={styles.container}>
         <View>
@@ -127,7 +127,6 @@ export default function List() {
                 id={item.id}
                 itens={item.tarefa} 
                 funcUpd={(id)=> abrirnModal(id)}
-                // funcUpd={(id)=> updateTarefa(id)}
                 funcDel={(id)=> deletar(id)} 
                 concluido={item.concluido}
                 done={(id)=> done(id)}
@@ -142,7 +141,6 @@ export default function List() {
                 id={item.id}
                 itens={item.tarefa} 
                 funcUpd={(id)=> abrirnModal(id)}
-                // funcUpd={(id)=> updateTarefa(id)}
                 funcDel={(id)=> deletar(id)} 
                 concluido={item.concluido}
                 done={(id)=> done(id)}
