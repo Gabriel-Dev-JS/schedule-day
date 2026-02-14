@@ -20,22 +20,23 @@ export type TarefaModal = {
 export default function Modal ({titulo, closeModal, executar, tarefa, openModal, id, alterarTexto, value}:ModalProps) {
     return(
         <View style={openModal === true ? styles.containerOpen : styles.containerClose}>
-            <View>
-                <Text style={styles.titulo}>{titulo}</Text>
+            <View style={styles.containerOpenFilho}>
+                <View>
+                    <Text style={styles.titulo}>{titulo}</Text>
+                </View>
+                <View style={{width: "100%", display:"flex", alignItems: "center"}}>
+                    <TextInput
+                        onChangeText={(e)=> alterarTexto(e)}
+                        value={value}
+                        placeholder={tarefa}
+                        style={styles.inputTexto}
+                    />
+                </View>
+                <View style={styles.conatinerBtn}>
+                    <TouchableOpacity onPress={()=> closeModal()} style={styles.btnCancelar}><Text style={{fontWeight: 600, textAlign: "center"}}>Cancelar</Text></TouchableOpacity>
+                    <TouchableOpacity onPress={() => executar(id)} style={styles.btnEditar}><Text style={{fontWeight: 600, textAlign: "center"}}>Alterar</Text></TouchableOpacity>
+                </View>
             </View>
-            <View>
-                <TextInput
-                    onChangeText={(e)=> alterarTexto(e)}
-                    value={value}
-                    placeholder={tarefa}
-                />
-            </View>
-            <View style={styles.conatinerBtn}>
-                <TouchableOpacity onPress={()=> closeModal()}><Text>Cancelar</Text></TouchableOpacity>
-                <TouchableOpacity onPress={() => executar(id)}><Text>Alterar</Text></TouchableOpacity>
-            </View>
-            
-
         </View>
     )
 }
@@ -48,21 +49,51 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        height: "80%",
+        height: "100%",
         width: "90%",
-        backgroundColor: "#33338e"
+        backgroundColor: "#ababb4",
+        borderRadius: 8
     },
     containerClose: {
         height: "80%",
         width: "90%",
         display: "none"
     },
+    containerOpenFilho: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "space-between",
+        height: "70%",
+        width: "100%",
+    },
     titulo: {
-        fontWeight: 600
+        fontWeight: 600,
+        fontSize: 30
     },
     conatinerBtn: {
         display:"flex",
         flexDirection: "row",
-        gap: 120
+        gap: 20
+    },
+    btnEditar: {
+        backgroundColor: "green",
+        width: "40%",
+        padding: 12,
+        borderRadius: 8
+    },
+    btnCancelar: {
+        backgroundColor: "#950606",
+        width: "40%",
+        padding: 12,
+        borderRadius: 8
+    },
+    inputTexto: {
+        width: "90%",
+        height: 60,
+        padding: 24,
+        borderRadius: 8,
+        backgroundColor: "#ffff"
+         
     }
 })

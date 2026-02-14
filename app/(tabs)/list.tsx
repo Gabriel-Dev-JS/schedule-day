@@ -25,7 +25,6 @@ export default function List() {
       try{
         const response = await database.getAll()
         setTarefas(response)
-        console.log(response)
         return response
       }catch(error:any){
         console.error("error: ", error)
@@ -94,7 +93,6 @@ export default function List() {
     setOpenModal(!openModal)
   }
 
-  console.log(newTarefa)
   return (
     <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
       <Modal 

@@ -12,7 +12,6 @@ export interface CardProps {
   concluido: boolean;
   done: (id:number)=> void;
   funcUpd: (id: number) => Promise<SQLiteExecuteAsyncResult<TarefasProps> | undefined>;
-  // funcUpd: (id: number) => Promise<SQLiteExecuteAsyncResult<TarefasProps> | undefined>
   funcDel: (id: number) => Promise<SQLiteExecuteAsyncResult<number> | undefined>
 } 
 
