@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "daily-task",
-    "slug": "daily-task",
+    "name": "schedule-day",
+    "slug": "schedule-day",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icone.png",
-    "scheme": "dailytask",
+    "scheme": "scheduleday",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -13,11 +13,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icone.png",
-        "backgroundColor": "#E6F4FE"
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/images/icone.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.gabrieldevjs.scheduleday"
     },
     "web": {
       "output": "static",
@@ -46,7 +47,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "18e85728-83bb-482e-8c4d-39b8a140ae92"
+        "projectId": "4b91f932-fb85-4816-b289-72fd53a3e9bb"
       }
     }
   }

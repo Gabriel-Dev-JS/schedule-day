@@ -1,5 +1,5 @@
 {
-  "name": "daily-task",
+  "name": "schedule-day",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
